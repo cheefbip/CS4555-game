@@ -75,6 +75,12 @@ public class PlayerMovement : MonoBehaviour
 	[SerializeField] private LayerMask _groundLayer;
 	#endregion
 
+	
+	[Header("Animation")] 
+	[SerializeField] private SpriteRenderer spriteRenderer;
+	[SerializeField] private Animator animator;
+
+
     private void Awake()
 	{
 		RB = GetComponent<Rigidbody2D>();
@@ -102,8 +108,9 @@ public class PlayerMovement : MonoBehaviour
 		_moveInput.x = Input.GetAxisRaw("Horizontal");
 		_moveInput.y = Input.GetAxisRaw("Vertical");
 
-		if (_moveInput.x != 0)
+		if (_moveInput.x != 0) {
 			CheckDirectionToFace(_moveInput.x > 0);
+		}
 
 		if(Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.C) || Input.GetKeyDown(KeyCode.J))
         {
@@ -179,7 +186,7 @@ public class PlayerMovement : MonoBehaviour
 				Jump();
 			}
 			//WALL JUMP
-			else if (CanWallJump() && LastPressedJumpTime > 0)
+			else if (false) //(Jump() && LastPressedJumpTime > 0)
 			{
 				IsWallJumping = true;
 				IsJumping = false;
@@ -228,7 +235,7 @@ public class PlayerMovement : MonoBehaviour
 		if (!_isDashAttacking)
 		{
 			//Higher gravity if we've released the jump input or are falling
-			if (IsSliding)
+			if (false) //(IsSliding)
 			{
 				SetGravityScale(0);
 			}
@@ -285,6 +292,12 @@ public class PlayerMovement : MonoBehaviour
 			Run(Data.dashEndRunLerp);
 		}
 
+		if (LastOnGroundTime > 0) {
+			animator.SetBool("isFalling", false);
+		} else {
+			animator.SetBool("isFalling", true);
+		}
+
 		//Handle Slide
 		if (IsSliding)
 			Slide();
@@ -337,6 +350,14 @@ public class PlayerMovement : MonoBehaviour
 	{
 		//Calculate the direction we want to move in and our desired velocity
 		float targetSpeed = _moveInput.x * Data.runMaxSpeed;
+
+		// # TODO
+		if (_moveInput != Vector2.zero) {
+			animator.SetBool("isRunning", true);
+		} else {
+			animator.SetBool("isRunning", false);
+		}
+
 		//We can reduce are control using Lerp() this smooths changes to are direction and speed
 		targetSpeed = Mathf.Lerp(RB.linearVelocity.x, targetSpeed, lerpAmount);
 

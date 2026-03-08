@@ -9,9 +9,11 @@ public class CameraFollow : MonoBehaviour
     public Transform target;
 
     // Update is called once per frame
+    Vector3 velocity = Vector3.zero;
+
     void LateUpdate()
     {
-        Vector3 newPos = new Vector3(target.position.x,target.position.y + yOffset,-10f);
-        transform.position = Vector3.Slerp(transform.position,newPos,FollowSpeed*Time.deltaTime);
+        Vector3 targetPos = new Vector3(target.position.x, target.position.y + yOffset, -10f);
+        transform.position = Vector3.SmoothDamp(transform.position, targetPos, ref velocity, 0.15f);
     }
 }
