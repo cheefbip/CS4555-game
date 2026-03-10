@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 5750894579519168429}
   - component: {fileID: 1491402282015957044}
   - component: {fileID: 8214388642409594775}
+  - component: {fileID: 566560739419389934}
   m_Layer: 7
   m_Name: Enemy
   m_TagString: Untagged
@@ -165,3 +166,17 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 1
   m_Constraints: 4
+--- !u!114 &566560739419389934
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9120947415386742944}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 89f0676155b684145b6f0175e755ae9c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyAI
+  player: {fileID: 0}
+  speed: 2

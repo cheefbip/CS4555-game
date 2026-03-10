@@ -5,14 +5,20 @@ public class EnemyAI : MonoBehaviour
     public Transform player;
     public float speed = 2f;
 
-    void Update()
+    private Rigidbody2D rb;
+
+    void Awake()
+    {
+        rb = GetComponent<Rigidbody2D>();
+    }
+
+    void FixedUpdate()
     {
         if (player == null) return;
 
-        Vector3 direction = player.position - transform.position;
-        float moveX = Mathf.Sign(direction.x);
+        float direction = Mathf.Sign(player.position.x - transform.position.x);
 
-        transform.position += new Vector3(moveX, 0f, 0f) * speed * Time.deltaTime;
+        rb.linearVelocity = new Vector2(direction * speed, rb.linearVelocity.y);
     }
 
     void OnCollisionEnter2D(Collision2D collision)
@@ -25,6 +31,7 @@ public class EnemyAI : MonoBehaviour
 
     void KillPlayer()
     {
-        // Placeholder: GameController will handle player death later
+        player.transform.position = new Vector3(0,0,0);
+        Debug.Log("Death");
     }
 }

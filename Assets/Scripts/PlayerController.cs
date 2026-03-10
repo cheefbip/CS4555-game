@@ -34,6 +34,9 @@ public class PlayerMovement : MonoBehaviour
 	public float LastOnWallTime { get; private set; }
 	public float LastOnWallRightTime { get; private set; }
 	public float LastOnWallLeftTime { get; private set; }
+	// Timers used for player stretching
+	public float JumpTimer { get; private set; }
+	public float DashTimer { get; private set; }
 
 	//Jump
 	private bool _isJumpCut;
@@ -79,6 +82,7 @@ public class PlayerMovement : MonoBehaviour
 	[Header("Animation")] 
 	[SerializeField] private SpriteRenderer spriteRenderer;
 	[SerializeField] private Animator animator;
+	[SerializeField] private Transform avatar;
 
 
     private void Awake()
@@ -102,6 +106,9 @@ public class PlayerMovement : MonoBehaviour
 
 		LastPressedJumpTime -= Time.deltaTime;
 		LastPressedDashTime -= Time.deltaTime;
+		
+		JumpTimer -= Time.deltaTime;
+		DashTimer -= Time.deltaTime;
 		#endregion
 
 		#region INPUT HANDLER
@@ -184,6 +191,7 @@ public class PlayerMovement : MonoBehaviour
 				_isJumpCut = false;
 				_isJumpFalling = false;
 				Jump();
+
 			}
 			//WALL JUMP
 			else if (false) //(Jump() && LastPressedJumpTime > 0)
@@ -275,6 +283,9 @@ public class PlayerMovement : MonoBehaviour
 			SetGravityScale(0);
 		}
 		#endregion
+		float t1 = Mathf.Clamp(JumpTimer*2f, 0, 1);
+		float t2 = Mathf.Clamp(DashTimer*2f, 0, 1);
+		avatar.transform.localScale = new Vector3(1 + t2*t2*0.5f, 1 + t1*t1*0.5f, 1);
     }
 
     private void FixedUpdate()
@@ -291,6 +302,7 @@ public class PlayerMovement : MonoBehaviour
 		{
 			Run(Data.dashEndRunLerp);
 		}
+		
 
 		if (LastOnGroundTime > 0) {
 			animator.SetBool("isFalling", false);
@@ -352,7 +364,7 @@ public class PlayerMovement : MonoBehaviour
 		float targetSpeed = _moveInput.x * Data.runMaxSpeed;
 
 		// # TODO
-		if (_moveInput != Vector2.zero) {
+		if (Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.D)) {
 			animator.SetBool("isRunning", true);
 		} else {
 			animator.SetBool("isRunning", false);
@@ -424,6 +436,8 @@ public class PlayerMovement : MonoBehaviour
 		//Ensures we can't call Jump multiple times from one press
 		LastPressedJumpTime = 0;
 		LastOnGroundTime = 0;
+		JumpTimer = .5f;
+		DashTimer = 0f;
 
 		#region Perform Jump
 		//We increase the force applied if we are falling
@@ -471,6 +485,8 @@ public class PlayerMovement : MonoBehaviour
 
 		LastOnGroundTime = 0;
 		LastPressedDashTime = 0;
+		DashTimer = 0.5f;
+		JumpTimer = 0f;
 
 		float startTime = Time.time;
 
@@ -579,6 +595,21 @@ public class PlayerMovement : MonoBehaviour
 	}
     #endregion
 
+
+	
+    void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.CompareTag("Hazard"))
+        {
+            KillPlayer();
+        }
+    }
+
+    void KillPlayer()
+    {
+        transform.position = new Vector3(0,0,0);
+        Debug.Log("Death");
+    }
 
     #region EDITOR METHODS
     private void OnDrawGizmosSelected()
