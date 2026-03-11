@@ -41,6 +41,9 @@ public class PlayerMovement : MonoBehaviour
 	//Jump
 	private bool _isJumpCut;
 	private bool _isJumpFalling;
+	
+	//Double Jump
+	private int _doubleJumpsLeft;
 
 	//Wall Jump
 	private float _wallJumpStartTime;
@@ -142,6 +145,7 @@ public class PlayerMovement : MonoBehaviour
 			if (Physics2D.OverlapBox(_groundCheckPoint.position, _groundCheckSize, 0, _groundLayer) && !IsJumping) //checks if set box overlaps with ground
 			{
 				LastOnGroundTime = Data.coyoteTime; //if so sets the lastGrounded to coyoteTime
+				_doubleJumpsLeft = Data.doubleJumpAmount; //resets double jumps when we touch the ground
             }		
 
 			//Right Wall Check
@@ -186,12 +190,22 @@ public class PlayerMovement : MonoBehaviour
 			//Jump
 			if (CanJump() && LastPressedJumpTime > 0)
 			{
+				Debug.Log("Jump");
 				IsJumping = true;
 				IsWallJumping = false;
 				_isJumpCut = false;
 				_isJumpFalling = false;
 				Jump();
-
+				Debug.Log(_doubleJumpsLeft);
+			}
+			else if (CanDoubleJump() && LastPressedJumpTime > 0)
+			{
+				Debug.Log("Double Jump");
+				IsJumping = true;
+				IsWallJumping = false;
+				_isJumpCut = false;
+				_isJumpFalling = false;
+				DoubleJump();
 			}
 			//WALL JUMP
 			else if (false) //(Jump() && LastPressedJumpTime > 0)
@@ -285,7 +299,9 @@ public class PlayerMovement : MonoBehaviour
 		#endregion
 		float t1 = Mathf.Clamp(JumpTimer*2f, 0, 1);
 		float t2 = Mathf.Clamp(DashTimer*2f, 0, 1);
-		avatar.transform.localScale = new Vector3(1 + t2*t2*0.5f, 1 + t1*t1*0.5f, 1);
+		t1 *= t1; t1 *= t1;
+		t2 *= t2; t2 *= t2;
+		avatar.transform.localScale = new Vector3(1 + t2*0.5f - t1*.25f, 1 + t1*0.5f - t2*.25f, 1);
     }
 
     private void FixedUpdate()
@@ -306,6 +322,7 @@ public class PlayerMovement : MonoBehaviour
 
 		if (LastOnGroundTime > 0) {
 			animator.SetBool("isFalling", false);
+			_doubleJumpsLeft = Data.doubleJumpAmount;
 		} else {
 			animator.SetBool("isFalling", true);
 		}
@@ -324,6 +341,7 @@ public class PlayerMovement : MonoBehaviour
 
 	public void OnJumpUpInput()
 	{
+		LastPressedJumpTime = 0;
 		if (CanJumpCut() || CanWallJumpCut())
 			_isJumpCut = true;
 	}
@@ -364,7 +382,7 @@ public class PlayerMovement : MonoBehaviour
 		float targetSpeed = _moveInput.x * Data.runMaxSpeed;
 
 		// # TODO
-		if (Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.D)) {
+		if (_moveInput.x != 0) {
 			animator.SetBool("isRunning", true);
 		} else {
 			animator.SetBool("isRunning", false);
@@ -446,6 +464,28 @@ public class PlayerMovement : MonoBehaviour
 		float force = Data.jumpForce;
 		if (RB.linearVelocity.y < 0)
 			force -= RB.linearVelocity.y;
+
+		RB.AddForce(Vector2.up * force, ForceMode2D.Impulse);
+		#endregion
+	}
+	
+    private void DoubleJump()
+	{
+		Debug.Log("Performing Double Jump");
+		//Ensures we can't call Jump multiple times from one press
+		LastPressedJumpTime = 0;
+		LastOnGroundTime = 0;
+		JumpTimer = .5f;
+		DashTimer = 0f;
+		_doubleJumpsLeft--;
+
+		#region Perform DJump
+		//We increase the force applied if we are falling
+		//This means we'll always feel like we jump the same amount 
+		//(setting the player's Y velocity to 0 beforehand will likely work the same, but I find this more elegant :D)
+		float force = Data.jumpForce * Data.doubleJumpForceMult;
+		//if (RB.linearVelocity.y < 0)
+		force -= RB.linearVelocity.y;
 
 		RB.AddForce(Vector2.up * force, ForceMode2D.Impulse);
 		#endregion
@@ -558,6 +598,11 @@ public class PlayerMovement : MonoBehaviour
     private bool CanJump()
     {
 		return LastOnGroundTime > 0 && !IsJumping;
+    }
+
+    private bool CanDoubleJump()
+    {
+		return _doubleJumpsLeft > 0;
     }
 
 	private bool CanWallJump()

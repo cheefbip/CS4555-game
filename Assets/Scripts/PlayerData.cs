@@ -42,7 +42,11 @@ public class PlayerDataWithDash : ScriptableObject
 	public float jumpHangTimeThreshold; //Speeds (close to 0) where the player will experience extra "jump hang". The player's velocity.y is closest to 0 at the jump's apex (think of the gradient of a parabola or quadratic function)
 	[Space(0.5f)]
 	public float jumpHangAccelerationMult; 
-	public float jumpHangMaxSpeedMult; 				
+	public float jumpHangMaxSpeedMult;
+
+	[Header("Double Jump")]
+	public int doubleJumpAmount;
+	[Range(0f, 1f)] public float doubleJumpForceMult;
 
 	[Header("Wall Jump")]
 	public Vector2 wallJumpForce; //The actual force (this time set by us) applied to the player when wall jumping.
@@ -58,7 +62,7 @@ public class PlayerDataWithDash : ScriptableObject
 	public float slideAccel;
 
     [Header("Assists")]
-	[Range(0.01f, 0.5f)] public float coyoteTime; //Grace period after falling off a platform, where you can still jump
+	[Range(0f, 0.5f)] public float coyoteTime; //Grace period after falling off a platform, where you can still jump
 	[Range(0.01f, 0.5f)] public float jumpInputBufferTime; //Grace period after pressing jump where a jump will be automatically performed once the requirements (eg. being grounded) are met.
 
 	[Space(20)]
