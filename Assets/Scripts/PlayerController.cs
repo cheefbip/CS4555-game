@@ -230,10 +230,7 @@ public class PlayerMovement : MonoBehaviour
 			Sleep(Data.dashSleepTime); 
 
 			//If not direction pressed, dash forward
-			if (_moveInput != Vector2.zero)
-				_lastDashDir = _moveInput;
-			else
-				_lastDashDir = IsFacingRight ? Vector2.right : Vector2.left;
+			_lastDashDir = IsFacingRight ? Vector2.right : Vector2.left;
 
 
 
@@ -523,6 +520,7 @@ public class PlayerMovement : MonoBehaviour
 		//Overall this method of dashing aims to mimic Celeste, if you're looking for
 		// a more physics-based approach try a method similar to that used in the jump
 
+		Debug.Log(dir);
 		LastOnGroundTime = 0;
 		LastPressedDashTime = 0;
 		DashTimer = 0.5f;
