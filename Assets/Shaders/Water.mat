@@ -51,7 +51,7 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _Alpha: 1
+    - _Alpha: 0.5
     - _QueueControl: 0
     - _QueueOffset: 0
     - _RippleDensity: 768
@@ -60,7 +60,7 @@ Material:
     m_Colors:
     - _BaseColor: {r: 0, g: 0.113084786, b: 0.20125782, a: 1}
     - _Emission: {r: 0, g: 0.32577467, b: 1, a: 1}
-    - _Offset: {r: -0, g: 0.003125171, b: 0, a: 0}
+    - _Offset: {r: -0.00086585374, g: 0.003125, b: 0, a: 0}
     - _RippleColor: {r: 0.49371064, g: 0.854923, b: 1, a: 1}
     - _WaveSpeed: {r: 0.05, g: 0.05, b: 0, a: 0}
   m_BuildTextureStacks: []

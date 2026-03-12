@@ -3567,6 +3567,18 @@ PrefabInstance:
       propertyPath: player
       value: 
       objectReference: {fileID: 986883960}
+    - target: {fileID: 566560739419389934, guid: 4e7312cde3fc8134a88233fd750d1e72, type: 3}
+      propertyPath: wallCheckOffset.x
+      value: 0.6
+      objectReference: {fileID: 0}
+    - target: {fileID: 566560739419389934, guid: 4e7312cde3fc8134a88233fd750d1e72, type: 3}
+      propertyPath: groundLayer.m_Bits
+      value: 256
+      objectReference: {fileID: 0}
+    - target: {fileID: 566560739419389934, guid: 4e7312cde3fc8134a88233fd750d1e72, type: 3}
+      propertyPath: groundCheckOffset.x
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3140774821896633281, guid: 4e7312cde3fc8134a88233fd750d1e72, type: 3}
       propertyPath: m_LocalPosition.x
       value: 4
