@@ -13,10 +13,15 @@ public class EnemyAI : MonoBehaviour
     public Vector2 groundCheckOffset = new Vector2(0.35f, -0.6f);
     public Vector2 wallCheckOffset = new Vector2(0.35f, 0f);
 
+    [Header("Stomp Settings")]
+    public float stompBounceForce = 8f;
+    public float stompKillHeight = 0.2f;
+
     private Rigidbody2D rb;
     private Vector2 patrolCenter;
     private int patrolDirection = 1;
     private bool wasChasing = false;
+    private bool isDead = false;
 
     void Awake()
     {
@@ -26,7 +31,7 @@ public class EnemyAI : MonoBehaviour
 
     void FixedUpdate()
     {
-        if (player == null || rb == null) return;
+        if (player == null || rb == null || isDead) return;
 
         float distanceToPlayer = Vector2.Distance(transform.position, player.position);
         bool isChasing = distanceToPlayer <= chaseRange;
@@ -91,9 +96,28 @@ public class EnemyAI : MonoBehaviour
 
     void OnCollisionEnter2D(Collision2D collision)
     {
+        if (isDead) return;
+
         if (collision.gameObject.CompareTag("Player"))
         {
-            KillPlayer();
+            Rigidbody2D playerRb = collision.gameObject.GetComponent<Rigidbody2D>();
+
+            bool playerAbove = collision.transform.position.y > transform.position.y + stompKillHeight;
+            bool playerFalling = playerRb != null && playerRb.linearVelocity.y < 0f;
+
+            if (playerAbove && playerFalling)
+            {
+                Die();
+
+                if (playerRb != null)
+                {
+                    playerRb.linearVelocity = new Vector2(playerRb.linearVelocity.x, stompBounceForce);
+                }
+            }
+            else
+            {
+                KillPlayer();
+            }
         }
     }
 
@@ -101,6 +125,15 @@ public class EnemyAI : MonoBehaviour
     {
         player.position = new Vector3(0, 0, 0);
         Debug.Log("Death");
+    }
+
+    void Die()
+    {
+        isDead = true;
+        rb.linearVelocity = Vector2.zero;
+        Debug.Log("Enemy defeated");
+
+        Destroy(gameObject);
     }
 
     void OnDrawGizmosSelected()
