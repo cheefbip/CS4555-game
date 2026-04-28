@@ -1,0 +1,26 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd">
+  <metadata>
+    <id>Zio</id>
+    <version>0.22.2</version>
+    <authors>Alexandre Mutel</authors>
+    <license type="expression">BSD-2-Clause</license>
+    <licenseUrl>https://licenses.nuget.org/BSD-2-Clause</licenseUrl>
+    <icon>zio.png</icon>
+    <readme>readme.md</readme>
+    <projectUrl>https://github.com/xoofx/zio</projectUrl>
+    <description>An abstract/virtual filesystem framework with many built-ins filesystems for .NET</description>
+    <releaseNotes>https://github.com/xoofx/zio/releases/tag/0.22.2</releaseNotes>
+    <copyright>Alexandre Mutel</copyright>
+    <tags>filesystem vfs VirtualFileSystem virtual abstract directory files io mock</tags>
+    <repository type="git" url="https://github.com/xoofx/zio" commit="c8c2f5328e50c1e7ab8c5c405fe70e0bd35f4782" />
+    <dependencies>
+      <group targetFramework="net8.0" />
+      <group targetFramework="net10.0" />
+      <group targetFramework=".NETStandard2.0">
+        <dependency id="System.Memory" version="4.6.3" exclude="Build,Analyzers" />
+      </group>
+      <group targetFramework=".NETStandard2.1" />
+    </dependencies>
+  </metadata>
+</package>
